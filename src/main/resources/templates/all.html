@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+</head>
+<body>
+<th:block th:each="item : ${listAll}">
+    <p><small th:text="${item.getDentistName()}"> </small>
+        <small th:text="${#dates.format(item.getVisitTime(), 'hh:mm dd.mm.yyyy')}">
+        </small>
+    <form th:action="@{/delete}" method="post">
+        <input type="hidden" name="delete" id="delete" th:value="${item.getId()}"/>
+        <button type="submit" class="btn btn-primary btn-lg btn-block login-btn">Delete</button>
+    </form>
+    </p>
+</th:block>
+
+<br/>
+<a th:href="@{/}">
+    <button type="submit">To main page</button>
+</a>
+</body>
+</html>
