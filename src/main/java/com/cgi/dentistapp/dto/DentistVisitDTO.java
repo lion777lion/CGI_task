@@ -8,6 +8,23 @@ import java.util.Date;
 
 public class DentistVisitDTO {
 
+    public DentistVisitDTO(Long id, String dentistName, Date visitTime) {
+        this.tempId = id;
+        this.dentistName = dentistName;
+        this.visitTime = visitTime;
+    }
+
+
+    public Long getTempId() {
+        return tempId;
+    }
+
+    public void setTempId(Long tempId) {
+        this.tempId = tempId;
+    }
+
+    Long tempId;
+
     @Size(min = 1, max = 50)
     String dentistName;
 
@@ -21,6 +38,7 @@ public class DentistVisitDTO {
     public DentistVisitDTO(String dentistName, Date visitTime) {
         this.dentistName = dentistName;
         this.visitTime = visitTime;
+
     }
 
     public String getDentistName() {

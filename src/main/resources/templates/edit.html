@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<form action="#" th:action="@{/edit}" th:object="${toEdit}" method="post">
+  <table>
+    <tr>
+      <td><p th:text="#{dentist.name}">dentist.name</p></td>
+      <td><input type="text" th:field="*{dentistName}" th:value="*{dentistName}"/></td>
+      <td th:if="${#fields.hasErrors('dentistName')}" th:errors="*{dentistName}">name.error</td>
+    </tr>
+    <tr>
+      <td><p th:text="#{visit.date}">visit.date</p></td>
+      <td><input type="datetime-local" th:field="*{visitTime}" th:value="*{visitTime}"/></td>
+      <td th:if="${#fields.hasErrors('visitTime')}" th:errors="*{visitTime}">date.error</td>
+      <td><input type="hidden" th:field="*{tempId}" th:value="*{tempId}"/></td>
+    </tr>
+    <tr>
+      <td>
+        <button type="submit" th:text="#{register.visit}"></button>
+      </td>
+    </tr>
+  </table>
+</form>
+
+</body>
+</html>

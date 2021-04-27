@@ -7,11 +7,15 @@
 <body>
 <th:block th:each="item : ${listAll}">
     <p><small th:text="${item.getDentistName()}"> </small>
-        <small th:text="${#dates.format(item.getVisitTime(), 'hh:mm dd.mm.yyyy')}">
+        <small th:text="${item.getVisitTime()}">
         </small>
+    <form th:action="@{/edit}" method="get">
+        <input type="hidden" name="edit" id="edit" th:value="${item.getId()}"/>
+        <button type="submit">Edit</button>
+    </form>
     <form th:action="@{/delete}" method="post">
         <input type="hidden" name="delete" id="delete" th:value="${item.getId()}"/>
-        <button type="submit" class="btn btn-primary btn-lg btn-block login-btn">Delete</button>
+        <button type="submit">Delete</button>
     </form>
     </p>
 </th:block>
