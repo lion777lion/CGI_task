@@ -1,8 +1,6 @@
 package com.cgi.dentistapp.controller;
 
 import com.cgi.dentistapp.dto.DentistVisitDTO;
-import com.cgi.dentistapp.entity.DentistVisitEntity;
-import com.cgi.dentistapp.entity.DentistVisitRepository;
 import com.cgi.dentistapp.service.DentistVisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -17,17 +15,10 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @EnableAutoConfiguration
 public class DentistAppController extends WebMvcConfigurerAdapter {
-
-    public DentistAppController(DentistVisitRepository repo) {
-        this.repo = repo;
-    }
-
-    DentistVisitRepository repo;
 
     @Autowired
     private DentistVisitService dentistVisitService;
@@ -37,41 +28,38 @@ public class DentistAppController extends WebMvcConfigurerAdapter {
         registry.addViewController("/results").setViewName("results");
     }
 
-    @GetMapping("/register")
-    public String showRegisterForm(DentistVisitDTO dentistVisitDTO) {
-        return "form";
-    }
-
     @GetMapping("/")
     public String index() {
         return "index";
     }
 
+    @GetMapping("/register")
+    public String showRegisterForm(DentistVisitDTO dentistVisitDTO, Model model) {
+        model.addAttribute("dentistVisitDTO", dentistVisitDTO);
+        model.addAttribute("allDentist", dentistVisitService.dentistList());
+        return "form";
+    }
+
     @PostMapping("/register")
-    public String postRegisterForm(@Valid DentistVisitDTO dentistVisitDTO, BindingResult bindingResult) {
+    public String postRegisterForm(@Valid DentistVisitDTO dentistVisitDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("allDentist", dentistVisitService.dentistList());
             return "form";
         }
-
         dentistVisitService.addVisit(dentistVisitDTO.getDentistName(), dentistVisitDTO.getVisitTime());
         return "redirect:/results";
     }
 
     @GetMapping("/list")
     public String showAll(Model model) {
-        List<DentistVisitEntity> listAll = (List<DentistVisitEntity>) repo.findAll();
-        model.addAttribute("listAll", listAll);
+        model.addAttribute("listAll", dentistVisitService.viewAll());
         return ("list");
     }
 
     @GetMapping("/edit")
-    public String toEdit(@RequestParam Long edit, Model model){
-        System.out.println(edit);
-        DentistVisitEntity temp = repo.findOne(edit);
-        System.out.println(temp.getDentistName());
-        DentistVisitDTO toEdit = new DentistVisitDTO(temp.getId(), temp.getDentistName(), temp.getVisitTime());
-        System.out.println(toEdit.getTempId());
-        model.addAttribute("toEdit", toEdit);
+    public String toEdit(@RequestParam Long edit, Model model) {
+        model.addAttribute("allDentist", dentistVisitService.dentistList());
+        model.addAttribute("toEdit", dentistVisitService.toEdit(edit));
         return ("edit");
     }
 
@@ -80,18 +68,14 @@ public class DentistAppController extends WebMvcConfigurerAdapter {
         if (bindingResult.hasErrors()) {
             return "edit";
         }
-        System.out.println(dentistVisitDTO.getTempId());
-        DentistVisitEntity temp = repo.findOne(dentistVisitDTO.getTempId());
-        temp.setDentistName(dentistVisitDTO.getDentistName());
-        temp.setVisitTime(dentistVisitDTO.getVisitTime());
-        repo.save(temp);
+        dentistVisitService.save(dentistVisitDTO);
         return ("redirect:/list");
     }
 
     @PostMapping
     @RequestMapping("/delete")
     public String deleteData(@RequestParam Long delete) {
-        repo.delete(delete);
+        dentistVisitService.delete(delete);
         return ("redirect:/list");
     }
 }
