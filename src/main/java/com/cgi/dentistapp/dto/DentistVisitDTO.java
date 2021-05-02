@@ -28,6 +28,7 @@ public class DentistVisitDTO {
     @Size(min = 1, max = 50)
     String dentistName;
 
+    //i didnt find way to make date unic and with time space
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     Date visitTime;
